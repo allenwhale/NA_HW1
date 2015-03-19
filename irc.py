@@ -1,25 +1,70 @@
 import socket
 import sys
+import re
+import datetime
 
-HOST = 'irc.twitch.tv'
-PORT = 6667
-NICK = 'allencat850502'
-IDNET = 'ALLEN'
-REALNAME = 'allenwhale'
-KEY = 'oauth:m9cv6y0v8jlusvn1xu4brpc67lbw6w'
-if __name__ == '__main__':
-    s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(5)
-    print('start connecting')
-    try:
-        s.connect((HOST, PORT))
-    except:
-        print('socket connection failed')
-    s.sendall(str.encode('PASS %s\r\n' % KEY))
-    s.sendall(str.encode('NICK %s\r\n' % NICK))
-    data = bytes.decode(s.recv(1024))
-    sock_buffer = ''
-    while True:
-        sock_buffer += s.recv(1024)
-        print(sock_buffer)
+
+class twitch_IRC:
+    def __init__(self, username, key, buffer_size=2048):
+        self.HOST = 'irc.twitch.tv'
+        self.PORT = 6667
+        self.USER = username
+        self.NICK = username
+        self.IDENT = username
+        self.REALNAME = username
+        self.CHANNEL = '#' + username
+        self.KEY = key
+        self.BUFFER_SIZE = buffer_size
+        err = self.connect()
+        if err:
+            print(err)
+            exit(1)
+        print('SUCCESSFULLY CONNECTED')
+
+    def recv(self):
+        return self.s.recv(self.BUFFER_SIZE).decode()
+
+    def send(self, m):
+        self.s.send(m.encode())
+
+
+    def connect(self):
+        print('START CONNECTING')
+        self.s = socket.socket()
+        try:
+            self.s.connect((self.HOST, self.PORT))
+        except:
+            print('CONNECTION ERROR')
+            return 'Econnect'
+        print('OAUTH')
+        self.s.send(('PASS %s\r\n' % self.KEY).encode())
+        self.s.send(('NICK %s\r\n' % self.NICK).encode())
+        self.s.send(("USER %s %s bla :%s\r\n" % (self.IDENT, self.HOST, self.REALNAME)).encode())
+        self.s.send(('JOIN %s\r\n' % self.CHANNEL).encode())
+        tmp = self.recv()
+        if tmp == ':tmi.twitch.tv NOTICE * :Login unsuccessful\r\n':
+            return 'EAuth'
+        print('OAUTH pass')
+        return None
+
+    def convert(self, m):
+        m = m.split('\r\n')
+        ret = []
+        for line in m:
+            if line.find('PING') != -1:
+                self.send('PONG %s\r\n' % line.split()[1])
+            else:
+                if line.find('PRIVMSG') != -1:
+                    r = re.search(':(.*)!(.*)@(.*)\sPRIVMSG #(.*)\s:(.*)', line)
+                    ret.append({'user': r.group(1),
+                        'time': datetime.datetime.now(),
+                        'message': r.group(5)})
+        return ret
+
+    def run(self, CmdHandler, LogHandler):
+        while True:
+            message = self.recv()
+            message = self.convert(message)     
+            LogHandler.log(message)
+            print(message)
 

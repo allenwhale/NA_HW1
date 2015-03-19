@@ -1,4 +1,6 @@
 # Byte-compiled / optimized / DLL files
+log
+.*.sw[op]
 __pycache__/
 *.py[cod]
 
