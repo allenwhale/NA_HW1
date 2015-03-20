@@ -9,4 +9,7 @@ from keyboard import KeyboardHandler
 
 if __name__ == '__main__':
     irc = twitch_IRC('allencat850502', 'oauth:m9cv6y0v8jlusvn1xu4brpc67lbw6w')
-    irc.run(NormalHandler(ExecuteHandler(KeyboardHandler())), LogHandler('log'), ParserHandler())
+    CmdHandlerList = [NormalHandler(ExecuteHandler(KeyboardHandler())), 
+    DemocracyHandler(ExecuteHandler(KeyboardHandler()), 5), 
+    ViolenceHandler(ExecuteHandler(KeyboardHandler()), 5)]
+    irc.run(CmdHandlerList, LogHandler('log'), ParserHandler())

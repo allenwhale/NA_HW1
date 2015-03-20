@@ -2,6 +2,7 @@ import socket
 import sys
 import re
 import datetime
+import select
 
 
 class twitch_IRC:
@@ -16,6 +17,7 @@ class twitch_IRC:
         self.KEY = key
         self.BUFFER_SIZE = buffer_size
         err = self.connect()
+        
         if err:
             print(err)
             exit(1)
@@ -37,6 +39,7 @@ class twitch_IRC:
             print('CONNECTION ERROR')
             return 'Econnect'
         print('OAUTH')
+        self.s.settimeout(1)
         self.s.send(('PASS %s\r\n' % self.KEY).encode())
         self.s.send(('NICK %s\r\n' % self.NICK).encode())
         self.s.send(("USER %s %s bla :%s\r\n" % (self.IDENT, self.HOST, self.REALNAME)).encode())
@@ -50,25 +53,63 @@ class twitch_IRC:
     def convert(self, m):
         m = m.split('\r\n')
         ret = []
+        cmd = []
         for line in m:
             if line.find('PING') != -1:
                 self.send('PONG %s\r\n' % line.split()[1])
             else:
                 if line.find('PRIVMSG') != -1:
                     r = re.search(':(.*)!(.*)@(.*)\sPRIVMSG #(.*)\s:(.*)', line)
+                    if r.group(5).find('\\') != -1 and r.group(5)[0] == '\\':
+                        cmd.append(r.group(5)[1:].split())
+                        continue
                     ret.append({'user': r.group(1),
                         'time': datetime.datetime.now(),
                         'message': r.group(5)})
-        return ret
+                
+        return (ret, cmd)
+        
+    def command(self, cmd):
+        for c in cmd:
+            print(c)
+            try:
+                if c[0].lower() == 'change':
+                    if c[1].lower() == 'mode':
+                        if c[2].lower() == 'normal':
+                            self.CmdHandler = self.CmdHandlerList[0]
+                            print('change to normal')
+                        elif c[2].lower() == 'democracy':
+                            self.CmdHandler = self.CmdHandlerList[1]
+                            print('change to democracy')
+                        elif c[2].lower() == 'violence':
+                            self.CmdHandler = self.CmdHandlerList[2]
+                            print('change to violence')
+                        try:
+                            self.CmdHandler.set_delta(int(c[3]))
+                        except:
+                            pass
+                elif c[0].lower() == 'exit':
+                    print('service close')
+                    return 'exit'
+            except:
+                print('command error')
+        return None
+                    
 
-    def run(self, CmdHandler, LogHandler, ParserHandler):
+    def run(self, CmdHandlerList, LogHandler, ParserHandler):
+        self.CmdHandlerList = CmdHandlerList
+        self.CmdHandler = self.CmdHandlerList[0]
         while True:
-            message = self.recv()
-            message = self.convert(message)     
-            LogHandler.log(message)
-            for m in message:
-                m['cmd'] = ParserHandler.parser(m['message'])
-			print(message)
-            CmdHandler.execute(message)
-            print(message)
+            try:
+                message = self.recv()
+                message, cmd = self.convert(message)
+                LogHandler.log(message)
+                if self.command(cmd) == 'exit':
+                    return
+                for m in message:
+                    m['cmd'] = ParserHandler.parser(m['message'])
+                self.CmdHandler.execute(message)
+            except:
+                self.CmdHandler.execute([])
+                pass
 

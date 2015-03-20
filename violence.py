@@ -13,6 +13,9 @@ class ViolenceHandler:
                     'select': 0,
                     'start': 0}
 
+    def set_time_delta(self, delta):
+        self.time_delta = datetime.timedelta(seconds=delta)
+        
     def clear_count(self):
         for i in self.count.keys():
             self.count[i] = 0
@@ -23,6 +26,7 @@ class ViolenceHandler:
                 if m['cmd'].count(c) == len(m['cmd']):
                     self.count[c] = max(self.count[c], len(m['cmd']))
                     break
+        print(datetime.datetime.now() - self.last_time , self.time_delta)
         if datetime.datetime.now() - self.last_time >= self.time_delta:
             self._execute()
             self.clear_count()
@@ -30,6 +34,8 @@ class ViolenceHandler:
 
     def _execute(self):
         cmd = max(self.count.keys(), key=lambda x: self.count[x])
+        print('test: '+cmd+str(self.count[cmd]))
         if self.count[cmd] == 0:
             return
+        print(cmd)
         self.ExecuteHandler.send([cmd])
