@@ -6,7 +6,8 @@ class NormalHandler:
         cmd = []
         for m in message:
             cmd += m['cmd']
-        self._execute(cmd)
+        self._execute([cmd])
+        print(cmd)
 
     def _execute(self, cmd):
         for c in cmd:

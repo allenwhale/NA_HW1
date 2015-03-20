@@ -152,6 +152,7 @@ class KeyboardHandler:
     
     def send(self, cmd):
         for c in cmd:
+            #print(c)
             if isinstance(c, tuple):
                 self.press_tuple(c)
             else:
