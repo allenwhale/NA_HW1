@@ -30,4 +30,4 @@ class DemocracyHandler:
         cmd = max(self.count.keys(), key=lambda x: self.count[x])
         if self.count[cmd] == 0:
             return
-        self.ExecuteHandler.send(cmd)
+        self.ExecuteHandler.send([cmd])

@@ -68,6 +68,7 @@ class twitch_IRC:
             LogHandler.log(message)
             for m in message:
                 m['cmd'] = ParserHandler.parser(m['message'])
+			print(message)
             CmdHandler.execute(message)
             print(message)
 
