@@ -12,7 +12,6 @@ class ViolenceHandler:
                     'b': 0,
                     'select': 0,
                     'start': 0,
-                    'select': 0,
                     'x': 0,
                     'y': 0,
                     'l': 0,
