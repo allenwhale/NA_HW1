@@ -11,7 +11,12 @@ class ViolenceHandler:
                     'a': 0,
                     'b': 0,
                     'select': 0,
-                    'start': 0}
+                    'start': 0,
+                    'select': 0,
+                    'x': 0,
+                    'y': 0,
+                    'l': 0,
+                    'r': 0}
 
     def set_time_delta(self, delta):
         self.time_delta = datetime.timedelta(seconds=delta)
