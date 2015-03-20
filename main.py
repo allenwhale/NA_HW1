@@ -1,6 +1,6 @@
 from irc import twitch_IRC
 from log import LogHandler
-from parser import ParserHandler
+from myparser import ParserHandler
 from normal import NormalHandler
 from execute import ExecuteHandler
 from democracy import DemocracyHandler
