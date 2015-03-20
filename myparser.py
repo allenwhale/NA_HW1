@@ -8,12 +8,12 @@ class ParserHandler:
                 'start',
                 'select']
     MAP = {
-        'up': 'up',
-        'down': 'down',
-        'right': 'right',
-        'left': 'left',
-        'start': 'start',
-        'select': 'select',
+        'up': 'numpad_8',
+        'down': 'numpad_2',
+        'right': 'numpad_6',
+        'left': 'numpad_4',
+        'start': 'enter',
+        'select': 'backspace',
         'a': 'z',
         'b': 'x'
     }
