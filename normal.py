@@ -1,7 +1,14 @@
 class NormalHandler:
-    def __init__(self):
-        pass
+    def __init__(self, ExecuteHandler):
+        self.ExecuteHandler = ExecuteHandler
 
     def execute(self, message):
+        cmd = []
         for m in message:
+            cmd += m['cmd']
+        self._execute(cmd)
+
+    def _execute(self, cmd):
+        for c in cmd:
+            self.ExecuteHandler.send(c)
 

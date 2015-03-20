@@ -18,7 +18,7 @@ class ParserHandler:
                 if message.find(a) == 0:
                     ret.append(a)
                     message = message[len(a):]
-                    fount = True
+                    found = True
             if not found:
                 message = message[1:]
         return ret

@@ -61,10 +61,13 @@ class twitch_IRC:
                         'message': r.group(5)})
         return ret
 
-    def run(self, CmdHandler, LogHandler):
+    def run(self, CmdHandler, LogHandler, ParserHandler):
         while True:
             message = self.recv()
             message = self.convert(message)     
             LogHandler.log(message)
+            for m in message:
+                m['cmd'] = ParserHandler.parser(m['message'])
+            CmdHandler.execute(message)
             print(message)
 
