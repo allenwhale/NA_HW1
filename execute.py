@@ -1,7 +1,27 @@
+import datetime
+from log import LogHandler
 class ExecuteHandler:
-    def __init__(self, KeyboardHandler):
+    MAP = {
+    'numpad_8': 'up',
+    'numpad_2': 'down',
+    'numpad_6': 'right',
+    'numpad_4': 'left',
+    'enter': 'start',
+    'backspace': 'select',
+    'z': 'a',
+    'x': 'b'}
+    def __init__(self, KeyboardHandler, delta=3):
         self.KeyboardHandler = KeyboardHandler
-        self.count = {}
+        self.count = {'up': 0, 'down': 0, 'right': 0, 'left': 0, 'start': 0, 'select': 0, 'a': 0, 'b': 0}
+        self.last_time = datetime.datetime.now()
+        self.time_delta = datetime.timedelta(seconds=delta)
+        self.LogHandler = LogHandler()
 
     def send(self, cmd):
+        for c in cmd:
+            self.count[self.MAP[cmd]] += 1
         self.KeyboardHandler.send(cmd)
+        if datetime.datetime.now() - self.last_time >= self.time_delta:
+            self.last_time = datetime.datetime.now()
+            self.LogHandler.log_count(self.count)
+            
