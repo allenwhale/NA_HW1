@@ -4,6 +4,7 @@ class DemocracyHandler:
         self.ExecuteHandler = ExecuteHandler
         self.last_time = datetime.datetime.now()
         self.time_delta = datetime.timedelta(seconds=delta)
+        self.name = 'Democracy'
         self.count = {'up': 0,
                     'down': 0,
                     'left': 0,
@@ -29,9 +30,15 @@ class DemocracyHandler:
             for c in m['cmd']:
                 self.count[c] += 1
         if datetime.datetime.now() - self.last_time >= self.time_delta:
+            self.last_time = datetime.datetime.now()
+            _max = max(self.count.keys())
+            if [self.count[i]==_max for i in self.count].count(True) > 1:
+                for i in self.count:
+                    if self.count[i] != _max:
+                        self.count[i] = -999999
+                return
             self._execute()
             self.clear_count()
-            self.last_time = datetime.datetime.now()
 
     def _execute(self):
         cmd = max(self.count.keys(), key=lambda x: self.count[x])

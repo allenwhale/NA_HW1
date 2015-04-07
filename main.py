@@ -8,7 +8,7 @@ from violence import ViolenceHandler
 from keyboard import KeyboardHandler
 
 if __name__ == '__main__':
-    irc = twitch_IRC('allencat850502', 'oauth:m9cv6y0v8jlusvn1xu4brpc67lbw6w')
+    irc = twitch_IRC('allencat850502', 'oauth:x69xegnjzqg3c41269w2r4mmbdm1w9')
     CmdHandlerList = [NormalHandler(ExecuteHandler(KeyboardHandler())), 
     DemocracyHandler(ExecuteHandler(KeyboardHandler()), 5), 
     ViolenceHandler(ExecuteHandler(KeyboardHandler()), 5)]

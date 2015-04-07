@@ -16,6 +16,7 @@ class twitch_IRC:
         self.CHANNEL = '#' + username
         self.KEY = key
         self.BUFFER_SIZE = buffer_size
+        self.start_time = datetime.datetime.now()
         err = self.connect()
         
         if err:
@@ -65,6 +66,8 @@ class twitch_IRC:
                         continue
                     ret.append({'user': r.group(1),
                         'time': datetime.datetime.now(),
+                        'past_time': datetime.datetime.now() - self.start_time,
+                        'mode': self.CmdHandler.name,
                         'message': r.group(5)})
                 
         return (ret, cmd)

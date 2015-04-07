@@ -1,5 +1,5 @@
 class LogHandler:
-    def __init__(self, filename):
+    def __init__(self, filename='log'):
         self.FILENAME = filename
 
     def log(self, message):

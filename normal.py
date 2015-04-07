@@ -1,6 +1,7 @@
 class NormalHandler:
     def __init__(self, ExecuteHandler):
         self.ExecuteHandler = ExecuteHandler
+        self.name = 'Normal'
 
     def execute(self, message):
         cmd = []
