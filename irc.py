@@ -40,7 +40,7 @@ class twitch_IRC:
             print('CONNECTION ERROR')
             return 'Econnect'
         print('OAUTH')
-        self.s.settimeout(1)
+        self.s.settimeout(0.5)
         self.s.send(('PASS %s\r\n' % self.KEY).encode())
         self.s.send(('NICK %s\r\n' % self.NICK).encode())
         self.s.send(("USER %s %s bla :%s\r\n" % (self.IDENT, self.HOST, self.REALNAME)).encode())
@@ -74,7 +74,6 @@ class twitch_IRC:
         
     def command(self, cmd):
         for c in cmd:
-            print(c)
             try:
                 if c[0].lower() == 'change':
                     if c[1].lower() == 'mode':
@@ -87,10 +86,13 @@ class twitch_IRC:
                         elif c[2].lower() == 'violence':
                             self.CmdHandler = self.CmdHandlerList[2]
                             print('change to violence')
-                        try:
-                            self.CmdHandler.set_delta(int(c[3]))
-                        except:
-                            pass
+                        #try:
+                        print(int(c[3]))
+                        print(self.CmdHandler.set_time_delta)
+                        self.CmdHandler.set_time_delta(int(c[3]))
+                        #except:
+                        #    print('errrr')
+                        #    pass
                 elif c[0].lower() == 'exit':
                     print('service close')
                     return 'exit'
@@ -111,6 +113,7 @@ class twitch_IRC:
                     return
                 for m in message:
                     m['cmd'] = ParserHandler.parser(m['message'])
+                    #print('parse:' + str(m['cmd']))
                 self.CmdHandler.execute(message)
             except:
                 self.CmdHandler.execute([])

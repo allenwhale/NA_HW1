@@ -10,7 +10,7 @@ class ExecuteHandler:
     'backspace': 'select',
     'z': 'a',
     'x': 'b'}
-    def __init__(self, KeyboardHandler, delta=3):
+    def __init__(self, KeyboardHandler, delta=10):
         self.KeyboardHandler = KeyboardHandler
         self.count = {'up': 0, 'down': 0, 'right': 0, 'left': 0, 'start': 0, 'select': 0, 'a': 0, 'b': 0}
         self.last_time = datetime.datetime.now()
@@ -18,8 +18,10 @@ class ExecuteHandler:
         self.LogHandler = LogHandler()
 
     def send(self, cmd):
+        #print('cmd '+str(cmd))
         for c in cmd:
-            self.count[self.MAP[cmd]] += 1
+            #print('exe: '+str(c))
+            self.count[self.MAP[c]] += 1
         self.KeyboardHandler.send(cmd)
         if datetime.datetime.now() - self.last_time >= self.time_delta:
             self.last_time = datetime.datetime.now()
