@@ -3,10 +3,13 @@ import sys
 import re
 import datetime
 import select
+import win32api
+import win32con
 
 
 class twitch_IRC:
     def __init__(self, username, key, buffer_size=2048):
+        self.speed = 0
         self.HOST = 'irc.twitch.tv'
         self.PORT = 6667
         self.USER = username
@@ -82,20 +85,28 @@ class twitch_IRC:
                             print('change to normal')
                         elif c[2].lower() == 'democracy':
                             self.CmdHandler = self.CmdHandlerList[1]
+                            self.CmdHandler.set_time_delta(int(c[3]))
                             print('change to democracy')
                         elif c[2].lower() == 'violence':
                             self.CmdHandler = self.CmdHandlerList[2]
+                            self.CmdHandler.set_time_delta(int(c[3]))
                             print('change to violence')
-                        #try:
-                        print(int(c[3]))
-                        print(self.CmdHandler.set_time_delta)
-                        self.CmdHandler.set_time_delta(int(c[3]))
-                        #except:
-                        #    print('errrr')
-                        #    pass
+                        elif c[2].lower() == 'reverse':
+                            self.CmdHandler = self.CmdHandlerList[3]
+                            print('change to Reverse')
+
                 elif c[0].lower() == 'exit':
                     print('service close')
                     return 'exit'
+                elif c[0].lower() == 'speed':
+                    if self.speed == 0:
+                        win32api.keybd_event(0x20, 0, 0, 0)
+                        self.speed = 1;
+                    else:
+                        win32api.keybd_event(0x20,0 , win32con.KEYEVENTF_KEYUP, 0)
+                        self.speed = 0
+                
+                    print('speed up')
             except:
                 print('command error')
         return None

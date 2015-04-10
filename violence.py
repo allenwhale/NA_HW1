@@ -51,7 +51,7 @@ class ViolenceHandler:
         if datetime.datetime.now() - self.last_time >= self.time_delta:
             self.last_time = datetime.datetime.now()
             _max = self.count[max(self.count.keys(),key=lambda x: self.count[x])]
-            #print('_max '+str(_max))
+            print('_max '+str(_max))
             if [self.count[i]==_max for i in self.count].count(True) > 1:
                 print('----------------')
                 print("vote: ")

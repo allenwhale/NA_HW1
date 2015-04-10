@@ -5,11 +5,13 @@ from normal import NormalHandler
 from execute import ExecuteHandler
 from democracy import DemocracyHandler
 from violence import ViolenceHandler
+from reverse import ReverseHandler
 from keyboard import KeyboardHandler
 
 if __name__ == '__main__':
-    irc = twitch_IRC('allencat850502', 'oauth:x69xegnjzqg3c41269w2r4mmbdm1w9')
+    irc = twitch_IRC('allencat850502', 'oauth:xleqdic11ra8bcb76a3chw93ya6t12')
     CmdHandlerList = [NormalHandler(ExecuteHandler(KeyboardHandler())), 
-    DemocracyHandler(ExecuteHandler(KeyboardHandler()), 5), 
-    ViolenceHandler(ExecuteHandler(KeyboardHandler()), 5)]
+    DemocracyHandler(ExecuteHandler(KeyboardHandler()), 3), 
+    ViolenceHandler(ExecuteHandler(KeyboardHandler()), 3),
+    ReverseHandler(ExecuteHandler(KeyboardHandler()))]
     irc.run(CmdHandlerList, LogHandler('log'), ParserHandler())
