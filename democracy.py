@@ -52,7 +52,7 @@ class DemocracyHandler:
             #print('_max '+str(_max))
             #print([self.count[i]==_max for i in self.count].count(True))
             if [self.count[i]==_max for i in self.count].count(True) > 1:
-                print(time.time())
+                @print(time.time())
                 print('----------------')
                 print("vote: ")
                 for i in self.count:
